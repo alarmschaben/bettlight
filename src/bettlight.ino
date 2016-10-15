@@ -150,8 +150,8 @@ void LightedButton::doLEDFSM() {
     analogWrite(ledPin, currentBrightness);
 }
 
-LightedButton button1(2, 5);
-LightedButton button2(0, 7);
+LightedButton button1(0, 7);
+LightedButton button2(1, 8);
 
 void setup () {
 }
