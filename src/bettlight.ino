@@ -1,7 +1,7 @@
 #include <LightedButton.h>
 
-LightedButton button1(0, 7);
-LightedButton button2(1, 8);
+LightedButton button1(0, 7, &lbConfig);
+LightedButton button2(1, 8, &lbConfig);
 
 void setup () {
 }

@@ -7,18 +7,22 @@ class LightedButton {
             SHORT,
             LONG};
 
+        // parameters, TODO: get those from EEPROM
+        typedef struct {
+            uint8_t idleBrightness = 1;
+            uint8_t maxBrightness = 254;
+            uint16_t fullyLitDuration = 2000;
+
+            uint16_t shortPressMinDuration = 100;
+            uint16_t longPressMinDuration = 800;
+        } LightedButtonConfig;
+
+        LightedButtonConfig *config;
+
     private:
         // method variables
         int buttonPin;
         int ledPin;
-
-        // parameters, TODO: get those from EEPROM
-        uint8_t idleBrightness = 1;
-        uint8_t maxBrightness = 254;
-        uint16_t fullyLitDuration = 2000;
-
-        uint16_t shortPressMinDuration = 100;
-        uint16_t longPressMinDuration = 800;
 
         // FSM declarations
         enum ButtonFSMState {
@@ -43,15 +47,16 @@ class LightedButton {
         uint32_t lastButtonStateChangeMillis;
 
     public:
-        LightedButton(int buttonPin, int ledPin) {
+        LightedButton(int buttonPin, int ledPin, LightedButtonConfig *config) {
             this->buttonPin = buttonPin;
             this->ledPin = ledPin;
+            this->config = config;
 
             pinMode(buttonPin, INPUT);
             digitalWrite(buttonPin, HIGH);
 
             pinMode(ledPin, OUTPUT);
-            analogWrite(ledPin, idleBrightness);
+            analogWrite(ledPin, config->idleBrightness);
 
             bs = BTN_IDLE;
             bps = NONE;

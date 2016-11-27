@@ -8,7 +8,7 @@ void LightedButton::doFSM() {
 void LightedButton::doButtonFSM() {
     switch(bs) {
         case BTN_IDLE:
-            if (!digitalRead(buttonPin) && (millis() - lastButtonStateChangeMillis >= shortPressMinDuration)) {
+            if (!digitalRead(buttonPin) && (millis() - lastButtonStateChangeMillis >= config->shortPressMinDuration)) {
                 bs = BTN_SHORT_PRESS;
                 lastButtonStateChangeMillis = millis();
             }
@@ -18,7 +18,7 @@ void LightedButton::doButtonFSM() {
             break;
         case BTN_SHORT_PRESS:
             if (!digitalRead(buttonPin)) {
-                if (millis() - lastButtonStateChangeMillis >= longPressMinDuration) {
+                if (millis() - lastButtonStateChangeMillis >= config->longPressMinDuration) {
                     bs = BTN_LONG_PRESS;
                 }
             } else {
@@ -46,7 +46,7 @@ void LightedButton::clearButtonPress() {
 void LightedButton::doLEDFSM() {
     switch(bls) {
         case LED_IDLE:
-            currentBrightness = idleBrightness;
+            currentBrightness = config->idleBrightness;
             if (!digitalRead(buttonPin)) {
                 bls = LED_FADE_UP;
                 lastLEDStateChangeMillis = millis();
@@ -57,16 +57,16 @@ void LightedButton::doLEDFSM() {
                 currentBrightness += 2;
                 lastLEDStateChangeMillis = millis();
             }
-            if (currentBrightness >= maxBrightness) {
+            if (currentBrightness >= config->maxBrightness) {
                 bls = LED_FULLY_LIT;
                 lastLEDStateChangeMillis = millis();
             }
             break;
         case LED_FULLY_LIT:
-            currentBrightness=maxBrightness;
+            currentBrightness=config->maxBrightness;
             if (!digitalRead(buttonPin))
                 lastLEDStateChangeMillis = millis();
-            if (millis() - lastLEDStateChangeMillis >= fullyLitDuration) {
+            if (millis() - lastLEDStateChangeMillis >= config->fullyLitDuration) {
                 bls = LED_FADE_DOWN;
                 lastLEDStateChangeMillis = millis();
             }
@@ -76,7 +76,7 @@ void LightedButton::doLEDFSM() {
                 currentBrightness -= 2;
                 lastLEDStateChangeMillis = millis();
             }
-            if (currentBrightness <= idleBrightness) {
+            if (currentBrightness <= config->idleBrightness) {
                 bls = LED_IDLE;
                 lastLEDStateChangeMillis = millis();
             }
