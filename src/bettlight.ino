@@ -1,6 +1,8 @@
 #include <LightedButton.h>
 #include <USI_I2C_Slave.h>
 
+#include <EEPROM.h>
+
 LightedButton::LightedButtonConfig lbConfig;
 
 unsigned char configBuffer[sizeof(lbConfig)], readPos;
@@ -11,7 +13,11 @@ LightedButton button2(1, 8, &lbConfig);
 
 void setup () {
     cli();
-    USI_init(0x44, sizeof(lbConfig), 1);
+    uint8_t address = EEPROM.read(0);
+    for (int i=0; i < sizeof(lbConfig); i++)
+        configBuffer[i] = EEPROM.read(i+1);
+    memcpy(&lbConfig, configBuffer, sizeof(lbConfig));
+    USI_init(address, sizeof(lbConfig), 1);
     sei();
 }
 
@@ -21,6 +27,9 @@ void loop() {
 
     if (usi_rxFlag) {
         memcpy(&lbConfig, usi_rxBuffer, sizeof(lbConfig));
+        for (int i=0; i < sizeof(lbConfig); i++)
+            EEPROM.write(i+1, usi_rxBuffer[i]);
+
         usi_rxFlag = false;
     }
 
