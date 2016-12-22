@@ -7,7 +7,6 @@ class LightedButton {
             SHORT,
             LONG};
 
-        // parameters, TODO: get those from EEPROM
         typedef struct {
             uint8_t idleBrightness = 1;
             uint8_t maxBrightness = 254;
